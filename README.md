@@ -1,2 +1,2 @@
 # FinallyTestSelenPyth
-Repository for finally testing task form Stepik's course "Selenium and Python"
+Repository for finally testing task from Stepik's course "Selenium and Python"
