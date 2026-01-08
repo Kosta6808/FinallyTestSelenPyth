@@ -31,7 +31,7 @@ def get_arg(name, default=None):
     return default
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def browser(request):
     browser_name = request.config.getoption("browser_name")
     if browser_name == "chrome":
@@ -39,17 +39,25 @@ def browser(request):
         # Получаем язык из командной строки или ставим 'en' по умолчанию
         lang = get_arg("language", "en")
         browser = Driver(browser="chrome", proxy=proxy_info, uc=True, locale_code=lang)
+        # Удаление всех куки
+        browser.delete_all_cookies()
+        # Очистка локального хранилища
+        browser.execute_script("window.localStorage.clear();")
+        # Очистка сессионного хранилища
+        browser.execute_script("window.sessionStorage.clear();")
     elif browser_name == "firefox":
         # Настраиваем парсер аргументов командной строки
         parser = argparse.ArgumentParser()
         parser.add_argument("--language", default="en-US")
         args, unknown = parser.parse_known_args()  # parse_known_args не выдаст ошибку на лишние флаги
         options = webdriver.FirefoxOptions()
+        options.set_preference("network.cookie.cookieBehavior", 0)  # Принимать все куки
+        options.set_preference("dom.storage.enabled", True)
         options.set_preference("intl.accept_languages", args.language)
         print("\nStart firefox browser for test...")
         browser = webdriver.Firefox(options=options, seleniumwire_options=proxy_options)
     else:
         raise pytest.UsageError("--browser_name should be chrome or firefox")
     yield browser
-    print("\nQuit browser..")
+    print("\nQuit browser...")
     browser.quit()
