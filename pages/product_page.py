@@ -12,6 +12,12 @@ class ProductPage(BasePage):
         add_to_basket.click()
 
     def should_by_basket_page(self):
+        # Удаление всех куки
+        self.browser.delete_all_cookies()
+        # Очистка локального хранилища
+        self.browser.execute_script("window.localStorage.clear();")
+        # Очистка сессионного хранилища
+        self.browser.execute_script("window.sessionStorage.clear();")
         self.should_be_add_to_basket()
         self.should_be_valid_price()
 

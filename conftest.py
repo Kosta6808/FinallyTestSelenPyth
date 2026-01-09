@@ -39,12 +39,6 @@ def browser(request):
         # Получаем язык из командной строки или ставим 'en' по умолчанию
         lang = get_arg("language", "en")
         browser = Driver(browser="chrome", proxy=proxy_info, uc=True, locale_code=lang)
-        # Удаление всех куки
-        browser.delete_all_cookies()
-        # Очистка локального хранилища
-        browser.execute_script("window.localStorage.clear();")
-        # Очистка сессионного хранилища
-        browser.execute_script("window.sessionStorage.clear();")
     elif browser_name == "firefox":
         # Настраиваем парсер аргументов командной строки
         parser = argparse.ArgumentParser()
