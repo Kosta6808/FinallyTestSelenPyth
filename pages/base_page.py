@@ -14,6 +14,10 @@ class BasePage:
         # self.browser.implicitly_wait(timeout)
         WebDriverWait(self.browser, timeout)
 
+    def go_to_basket(self):
+        (WebDriverWait(self.browser, 4).
+         until(ec.visibility_of_element_located(BasePageLocators.BASKET_BUTTON)).click())
+
     def go_to_login_page(self):
         link = self.browser.find_element(*BasePageLocators.LOGIN_LINK_INVALID)
         link.click()
