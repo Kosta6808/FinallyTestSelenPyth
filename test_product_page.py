@@ -3,6 +3,9 @@ import pytest
 from .pages.main_page import MainPage
 from .pages.product_page import ProductPage
 from .pages.basket_page import BasketPage
+from .pages.login_page import LoginPage
+
+from .pages.utils import generate_email, generate_password
 
 
 @pytest.mark.parametrize('link', ["http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0",
@@ -72,3 +75,30 @@ def test_guest_should_see_login_link_on_product_page(browser):
     product_page = ProductPage(browser, link)
     product_page.open()
     product_page.should_be_login_link()
+
+
+class TestUserAddToBasketFromProductPage:
+    @pytest.fixture(scope="class", autouse=True)
+    def setup(self, browser):
+        link = "https://selenium1py.pythonanywhere.com/ru/accounts/login/"
+        email = generate_email(self)
+        password = generate_password(9)
+        page = MainPage(browser, link)  # инициализируем Page Object, передаем в конструктор экземпляр драйвера и url адрес
+        page.open()  # открываем страницу
+        login_page = LoginPage(browser, link)
+        login_page.register_new_user(email, password)
+
+    def test_user_cant_see_success_message(self, browser):
+        link = "https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+        page = MainPage(browser, link)  # инициализируем Page Object, передаем в конструктор экземпляр драйвера и url адрес
+        page.open()  # открываем страницу
+        product_page = ProductPage(browser, link)
+        product_page.should_not_be_success_message()
+
+    def test_user_can_add_product_to_basket(self, browser):
+        link = "https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+        page = MainPage(browser, link)  # инициализируем Page Object, передаем в конструктор экземпляр драйвера и url адрес
+        page.open()  # открываем страницу
+        product_page = ProductPage(browser, link)
+        product_page.go_to_basket()  # выполняем метод страницы — добавляем продукт в корзину
+        product_page.should_by_basket_page()

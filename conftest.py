@@ -38,7 +38,7 @@ def browser(request):
         print("\nStart chrome browser for test...")
         # Получаем язык из командной строки или ставим 'en' по умолчанию
         lang = get_arg("language", "en")
-        browser = Driver(browser="chrome", proxy=proxy_info, uc=True, locale_code=lang)
+        browser = Driver(browser="chrome", proxy=proxy_info, uc=True, locale_code=lang, disable_csp=True, enable_sync=False)
     elif browser_name == "firefox":
         # Настраиваем парсер аргументов командной строки
         parser = argparse.ArgumentParser()
